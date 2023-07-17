@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory Form</title>
+
+  <!-- CSS Style Link -->
+  <link rel="stylesheet" href="../Style/index.css">
+  <!-- End CSS Style Link -->
+
+  <!-- Bootstrap Link -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- End Bootstrap Link -->
+
+  <!-- Font-awesome CDN Link  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- End Font-awesome CDN Link  -->
+  <!-- jQuery Link -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <!-- End jQuery Link -->
+</head>
+
+<body>
+  <div class="container">
+    <div class="inventHeader row">
+      <a href="../index.html" class=" col-5"><i class="fa-solid fa-house mt-3 homeIcon"></i></a>
+      <h1 class="col-5">Inventory</h1>
+    </div>
+    <div class="mt-5">
+      <form class="d-flex justify-content-center" name="inventAddingForm" id="inventAddingForm">
+        <fieldset>
+          <div class="userFormData shadow-lg p-3 mb-5 rounded-1" id="formData">
+            <div class="d-flex justify-content-end container">
+
+
+              <button onClick="clearForm()" class="btn btn-danger"><i class="fa fa-refresh"
+                  aria-hidden="true"></i></button>
+
+            </div>
+            <div class="d-flex flex-column justify-content-center gap-4 rounded-3 p-4 mainForm">
+              <div class="d-flex gap-5">
+                <div class="form-floating input_group">
+                  <input type="number" class="form-control inputValues" id="itemNo" placeholder="Enter Item Number"
+                    name="itemNo" id="itemNo" onkeyup="validateitemNo()">
+                  <label class="labelVal" for="itemNo">Item Number :</label>
+                  <span id="itemNoErr" class="errMsges"></span>
+
+                </div>
+                <div class="form-floating input_group">
+                  <input type="text" class="form-control inputValues" placeholder="Enter Item Name :" name="itemName"
+                    id="itemName" onkeyup="validateitemName()">
+                  <label class="labelVal" for="itemName">Item Name : </label>
+                  <span id="itemNameErr" class="errMsges"></span>
+
+
+                </div>
+              </div>
+              <div>
+                <label class="text-center" for="gender">Item Category : <span id="categoryErr"
+                    class="errMsges"></span></label>
+                <div class="d-flex justify-content-evenly">
+
+                  <div class="form-check">
+
+                    <input class="form-check-input" type="radio" id="snacks" name="category" value="snacks"
+                      onkeyup="validateCategory()">
+                    <label class="form-check-label">Snacks </label>
+                  </div>
+
+                  <div class="form-check">
+                    <input class="form-check-input " type="radio" id="drinks" name="category" value="drinks"
+                      onkeyup="validateCategory()">
+                    <label class="form-check-label">Drinks </label>
+                  </div>
+
+
+                </div>
+              </div>
+              <div class="d-flex gap-5">
+
+                <div class="form-floating input_group">
+                  <input type="number" class="form-control inputValues" placeholder="Enter Item Price" name="itemPrice"
+                    id="itemPrice" onkeyup="validateitemPrice()">
+                  <label class="labelVal" for="itemPrice">Item Price :</label>
+                  <span id="itemPriceErr" class="errMsges"></span>
+
+                </div>
+                <div class="form-floating input_group">
+                  <input type="number" class="form-control inputValues" name="purchased" id="purchased"
+                    placeholder="Purchased :" onkeyup="validatePurchased()">
+                  <label class="labelVal" for="purchased">No of Purchased :</label>
+                  <span id="purchasedErr" class="errMsges"></span>
+
+                </div>
+              </div>
+
+              <div class="input_group">
+                <label>Purchasing Date : </label>
+                <input type="date" id="purchasedDate" name="purchasedDate" value="">
+              </div>
+              <div class="input_group custom-file-upload ">
+                <label for="message">Item Image :</label>
+                <input type="file" id="itemImage" accept="image/*" name="itemImage" onkeyup="validateFiles()" multiple>
+                <span id="fileErr" class="errMsges"></span>
+
+              </div>
+
+
+
+
+              <div class="text-center input_group">
+                <button type="button" class="success_btn cursor-pointer" onClick="SubmitData()"
+                  id="submit">Submit</button>
+                <span id="submitErr" class="errMsges"></span>
+              </div>
+
+
+
+              <div class="text-center update_btn">
+                <a href="#dataTable"></a><button type="button" class="success_btn cursor-pointer" id="update"
+                  onClick="updateFormData()">Update</button>
+              </div>
+            </div>
+
+
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    
+    <h4 id="checkContent text-black"></h4>
+  </div>
+
+
+
+  </div>
+
+
+
+
+</body>
+<script src="../JS/index.js">
+
+</script>
+<script>
+  //Reference: 
+  //https://www.onextrapixel.com/2012/12/10/how-to-create-a-custom-file-input-with-jquery-css3-and-php/
+  (function ($) {
+
+    // Browser supports HTML5 multiple file?
+    var multipleSupport = typeof $('<input/>')[0].multiple !== 'undefined',
+      isIE = /msie/i.test(navigator.userAgent);
+
+    $.fn.customFile = function () {
+
+      return this.each(function () {
+
+        var $file = $(this).addClass('custom-file-upload-hidden'), // the original file input
+          $wrap = $('<div class="file-upload-wrapper">'),
+          $input = $('<input type="text" class="file-upload-input" />'),
+          // Button that will be used in non-IE browsers
+          $button = $('<button type="button" class="file-upload-button">Select a File</button>'),
+          // Hack for IE
+          $label = $('<label class="file-upload-button" for="' + $file[0].id + '">Select a File</label>');
+
+        // Hide by shifting to the left so we
+        // can still trigger events
+        $file.css({
+          position: 'absolute',
+          left: '-9999px'
+        });
+
+        $wrap.insertAfter($file)
+          .append($file, $input, (isIE ? $label : $button));
+
+        // Prevent focus
+        $file.attr('tabIndex', -1);
+        $button.attr('tabIndex', -1);
+
+        $button.click(function () {
+          $file.focus().click(); // Open dialog
+        });
+
+        $file.change(function () {
+
+          var files = [], fileArr, filename;
+
+          // If multiple is supported then extract
+          // all filenames from the file array
+          if (multipleSupport) {
+            fileArr = $file[0].files;
+            for (var i = 0, len = fileArr.length; i < len; i++) {
+              files.push(fileArr[i].name);
+            }
+            filename = files.join(', ');
+
+            // If not supported then just take the value
+            // and remove the path to just show the filename
+          } else {
+            filename = $file.val().split('\\').pop();
+          }
+
+          $input.val(filename) // Set the value
+            .attr('title', filename) // Show filename in title tootlip
+            .focus(); // Regain focus
+
+        });
+
+        $input.on({
+          blur: function () { $file.trigger('blur'); },
+          keydown: function (e) {
+            if (e.which === 13) { // Enter
+              if (!isIE) { $file.trigger('click'); }
+            } else if (e.which === 8 || e.which === 46) { // Backspace & Del
+              // On some browsers the value is read-only
+              // with this trick we remove the old input and add
+              // a clean clone with all the original events attached
+              $file.replaceWith($file = $file.clone(true));
+              $file.trigger('change');
+              $input.val('');
+            } else if (e.which === 9) { // TAB
+              return;
+            } else { // All other keys
+              return false;
+            }
+          }
+        });
+
+      });
+
+    };
+
+  }(jQuery));
+
+  $('input[type=file]').customFile();
+</script>
+
+</html>
